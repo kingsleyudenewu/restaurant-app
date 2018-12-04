@@ -12,3 +12,4 @@
 */
 
 Route::get('/', 'RestaurantController@getAllRestaurant');
+Route::get('/sort/{sort}', 'RestaurantController@getSorting');
