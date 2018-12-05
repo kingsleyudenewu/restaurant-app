@@ -12,6 +12,7 @@ class RestaurantController extends Controller
     public function getAllRestaurant(){
         //Fetch all the restaurants from the json file
         $restaurants = $this->getJsonFile()->getData();
+//        $sorting_value = $this->sortBy($restaurants, 'bestMatch')->getData();
         return view('welcome', compact('restaurants'));
     }
 
@@ -26,17 +27,13 @@ class RestaurantController extends Controller
         }
 
         try{
-
+            $data = $this->getJsonFile();
+            $array_data = $data->getData();
+            $array_value = $this->sortBy($array_data, $request->input('sorting'));
+            return $this->successResponse('success', $array_value->getData());
         }
         catch (\Exception $exception){
             return $this->errorResponse('failed');
         }
-    }
-
-    public function sorting_value(Request $request){
-        $data = $this->getJsonFile();
-        $array_data = $data->getData();
-        $array_value = $this->sortBy($array_data, $request->input('sort'));
-        return $this->successResponse('success', $array_value);
     }
 }

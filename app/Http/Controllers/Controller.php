@@ -109,8 +109,15 @@ class Controller extends BaseController
         return floor(($distance * $popularity) + $rating);
     }
 
-    public function sortBy(&$items, $key){
+    public function sortBy(&$items, $key, $order='desc'){
         if (is_array($items)){
+            if($key == 'topRestaurants'){
+                usort($items, function($a, $b) use ($key){
+                    return $b->$key <=> $a->$key;
+                });
+
+                return response()->json($items, 200);
+            }
             usort($items, function($a, $b) use ($key){
                 return $b->sortingValues->$key <=> $a->sortingValues->$key;
             });

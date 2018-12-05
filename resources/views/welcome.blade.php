@@ -31,36 +31,36 @@
     <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Start Bootstrap</a>
+            <a class="navbar-brand" href="#">Restaurant App</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home
-                            <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
+            {{--<div class="collapse navbar-collapse" id="navbarResponsive">--}}
+                {{--<ul class="navbar-nav ml-auto">--}}
+                    {{--<li class="nav-item active">--}}
+                        {{--<a class="nav-link" href="#">Home--}}
+                            {{--<span class="sr-only">(current)</span>--}}
+                        {{--</a>--}}
+                    {{--</li>--}}
+                    {{--<li class="nav-item">--}}
+                        {{--<a class="nav-link" href="#">About</a>--}}
+                    {{--</li>--}}
+                    {{--<li class="nav-item">--}}
+                        {{--<a class="nav-link" href="#">Services</a>--}}
+                    {{--</li>--}}
+                    {{--<li class="nav-item">--}}
+                        {{--<a class="nav-link" href="#">Contact</a>--}}
+                    {{--</li>--}}
+                {{--</ul>--}}
+            {{--</div>--}}
         </div>
     </nav>
 
     <!-- Header - set the background image for the header in the line below -->
-    <header class="py-5 bg-image-full" style="background-image: url('https://www.thuisbezorgd.nl/en/campaign/Favourites/img/Desk_friends.jpg');background-position-x: 63%;
+    <header class="py-5 bg-image-full" style="min-height: 300px;  background-image: url('https://www.thuisbezorgd.nl/en/campaign/Favourites/img/Desk_friends.jpg');background-position-x: 63%;
     background-position-y: 13%;
     background-size: cover;">
-        <img class="img-fluid d-block mx-auto" src="http://placehold.it/200x200&text=Logo" alt="">
+        {{--<img class="img-fluid d-block mx-auto" src="http://placehold.it/200x200&text=Logo" alt="">--}}
     </header>
 
     <!-- Content section -->
@@ -69,11 +69,22 @@
             <h1>Search For Your Restaurant</h1>
             <hr>
             <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="inputEmail4">Email</label>
-                    <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+
+                <div class="form-group col-md-4">
+                    <label for="inputEmail4">Sorting Values</label>
+                    <select name="sort_value" id="sort_value" class="form-control">
+                        <option value="">Sort By Values</option>
+                        <option value="bestMatch" selected> Best Match</option>
+                        <option value="newest">Newest</option>
+                        <option value="ratingAverage">Rating Average</option>
+                        <option value="distance">Distance</option>
+                        <option value="averageProductPrice">Average Product Price</option>
+                        <option value="deliveryCosts">Delivery Cost</option>
+                        <option value="minCost">Min. Cost</option>
+                        <option value="topRestaurants">Top Restaurants</option>
+                    </select>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="inputPassword4">Search For Restaurant</label>
                     <input type="text" class="form-control" id="name_search" placeholder="Search For Restaurant">
                 </div>
@@ -97,6 +108,7 @@
                         <th>Delivery Cost</th>
                         <th>Min. Cost</th>
                         <th>Favourite</th>
+                        <th>Top Restaurants</th>
 
                     </tr>
                 </thead>
@@ -114,6 +126,7 @@
                         <td>{{ $value->sortingValues->deliveryCosts }}</td>
                         <td>{{ $value->sortingValues->minCost }}</td>
                         <td>{{ $value->favourite }}</td>
+                        <td>{{ $value->topRestaurants }}</td>
 
                     </tr>
                 @endforeach
@@ -131,7 +144,7 @@
     <!-- Footer -->
     <footer class="py-5 bg-dark">
         <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2018</p>
+            <p class="m-0 text-center text-white">Copyright &copy; Restaurant App 2018</p>
         </div>
         <!-- /.container -->
     </footer>
@@ -143,30 +156,55 @@
 
     <script>
         $(document).ready(function(){
-           $('#name_search').keyup(function () {
+            $('#name_search').keyup(function () {
                var value = $(this).val().toLowerCase();
 
                var value = $(this).val().toLowerCase();
                $("#fbody tr").filter(function() {
                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                });
+            });
 
-               {{--$.ajax(--}}
-               {{--{--}}
-                   {{--url : "{{ route('sorting') }}",--}}
-                   {{--type: "POST",--}}
-                   {{--data : 'sorting='+name_search,--}}
-                   {{--success:function(response)--}}
-                   {{--{--}}
-                       {{--console.log(response);--}}
-                   {{--},--}}
-                   {{--error: function()--}}
-                   {{--{--}}
-                       {{--alert('Operation failed');--}}
-                   {{--}--}}
-               {{--});--}}
+            $('#sort_value').change(function () {
+                var sort_value = $(this).val();
 
-           });
+                $.ajax(
+                {
+                    url : "{{ route('sorting') }}",
+                    type: "POST",
+                    data : 'sorting='+sort_value,
+                    success:function(response)
+                    {
+//                        console.log(response);
+                        var json = jQuery.parseJSON(JSON.stringify(response.data));
+                        console.log(json);
+                        var content = '';
+                        for (var i = 0; i < json.length; i++) {
+                            content += '<tr>';
+                            content += '<td>' + json[i].name + '</td>';
+                            content += '<td>' + json[i].status + '</td>';
+                            content += '<td>' + json[i].sortingValues.bestMatch + '</td>';
+                            content += '<td>' + json[i].sortingValues.newest + '</td>';
+                            content += '<td>' + json[i].sortingValues.distance + '</td>';
+                            content += '<td>' + json[i].sortingValues.popularity + '</td>';
+                            content += '<td>' + json[i].sortingValues.ratingAverage + '</td>';
+                            content += '<td>' + json[i].sortingValues.averageProductPrice + '</td>';
+                            content += '<td>' + json[i].sortingValues.deliveryCosts + '</td>';
+                            content += '<td>' + json[i].sortingValues.minCost + '</td>';
+                            content += '<td>' + json[i].favourite + '</td>';
+                            content += '<td>' + json[i].topRestaurants + '</td>';
+                            content += '</tr>';
+                        }
+
+
+                        $('#myTable tbody').html(content);
+                    },
+                    error: function()
+                    {
+                        alert('Operation failed');
+                    }
+                });
+            });
         });
     </script>
 
