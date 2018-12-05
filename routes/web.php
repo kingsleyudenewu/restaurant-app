@@ -12,4 +12,5 @@
 */
 
 Route::get('/', 'RestaurantController@getAllRestaurant');
-Route::get('/sort/{sort}', 'RestaurantController@getSorting');
+Route::post('/sorting', 'RestaurantController@sorting')->name('sorting');
+//Route::get('allConsigeeSales/{consignee}', 'ConsigneeController@allConsigeeSales')->name('allConsigeeSales');

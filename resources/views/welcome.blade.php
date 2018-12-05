@@ -3,6 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
         <title>Laravel</title>
 
@@ -10,6 +12,16 @@
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
 
         <link rel="stylesheet" href="https://blackrockdigital.github.io/startbootstrap-full-width-pics/vendor/bootstrap/css/bootstrap.min.css" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+        {{--Set CSRF Header for sending request via javascript--}}
+        <script type="text/javascript">
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        </script>
 
 
 
@@ -54,7 +66,7 @@
     <!-- Content section -->
     <section class="py-5">
         <div class="container">
-            <h1>Search Foor Your Restaurant</h1>
+            <h1>Search For Your Restaurant</h1>
             <hr>
             <div class="form-row">
                 <div class="form-group col-md-6">
@@ -62,31 +74,47 @@
                     <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputPassword4">Password</label>
-                    <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                    <label for="inputPassword4">Search For Restaurant</label>
+                    <input type="text" class="form-control" id="name_search" placeholder="Search For Restaurant">
                 </div>
             </div>
         </div>
     </section>
 
     <section class="py-5">
-        <div class="container">
-            <table class="table table-dark">
+        <div class="container-fluid">
+            <table class="table table-dark" id="myTable">
                 <thead class="thead-light">
                     <tr>
                         <th>Name</th>
                         <th>Status</th>
-                        <th>Popularity</th>
+                        <th>Best Match</th>
+                        <th>Newest</th>
                         <th>Distance</th>
+                        <th>Popularity</th>
+                        <th>Average Rating</th>
+                        <th>Avg. Product Price</th>
+                        <th>Delivery Cost</th>
+                        <th>Min. Cost</th>
+                        <th>Favourite</th>
+
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="fbody">
                 @foreach ($restaurants as $value)
                     <tr>
                         <td>{{ $value->name }}</td>
                         <td>{{ $value->status }}</td>
-                        <td>{{ $value->sortingValues->popularity }}</td>
+                        <td>{{ $value->sortingValues->bestMatch }}</td>
+                        <td>{{ $value->sortingValues->newest }}</td>
                         <td>{{ $value->sortingValues->distance }}</td>
+                        <td>{{ $value->sortingValues->popularity }}</td>
+                        <td>{{ $value->sortingValues->ratingAverage }}</td>
+                        <td>{{ $value->sortingValues->averageProductPrice }}</td>
+                        <td>{{ $value->sortingValues->deliveryCosts }}</td>
+                        <td>{{ $value->sortingValues->minCost }}</td>
+                        <td>{{ $value->favourite }}</td>
+
                     </tr>
                 @endforeach
                 </tbody>
@@ -109,9 +137,38 @@
     </footer>
 
     <!-- Latest compiled and minified JavaScript -->
+
     <script src="https://blackrockdigital.github.io/startbootstrap-full-width-pics/vendor/bootstrap/js/bootstrap.min.js" crossorigin="anonymous"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+           $('#name_search').keyup(function () {
+               var value = $(this).val().toLowerCase();
+
+               var value = $(this).val().toLowerCase();
+               $("#fbody tr").filter(function() {
+                   $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+               });
+
+               {{--$.ajax(--}}
+               {{--{--}}
+                   {{--url : "{{ route('sorting') }}",--}}
+                   {{--type: "POST",--}}
+                   {{--data : 'sorting='+name_search,--}}
+                   {{--success:function(response)--}}
+                   {{--{--}}
+                       {{--console.log(response);--}}
+                   {{--},--}}
+                   {{--error: function()--}}
+                   {{--{--}}
+                       {{--alert('Operation failed');--}}
+                   {{--}--}}
+               {{--});--}}
+
+           });
+        });
+    </script>
 
     </body>
 </html>

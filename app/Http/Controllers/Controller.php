@@ -71,9 +71,19 @@ class Controller extends BaseController
         foreach ($newArray as $key => $value) {
             # code...
             if($value->status == 'open' && $value->favourite == 'yes')$final_array[] = $value;
-            if($value->status == 'open' && $value->favourite == 'no')$final_array[] = $value;
+
+        }
+
+        foreach ($newArray as $key => $value) {
             if ($value->status == 'order ahead' && $value->favourite == 'yes' && !(in_array($value->name, $final_array)))$final_array[] = $value;
+        }
+
+        foreach ($newArray as $key => $value) {
             if ($value->status == 'closed' && $value->favourite == 'yes' && !(in_array($value->name, $final_array)))$final_array[] = $value;
+        }
+
+        foreach ($newArray as $key => $value) {
+            if($value->status == 'open' && $value->favourite == 'no')$final_array[] = $value;
         }
 
 

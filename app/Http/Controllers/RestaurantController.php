@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+//use Validator;
 
 
 class RestaurantController extends Controller
@@ -14,7 +15,7 @@ class RestaurantController extends Controller
         return view('welcome', compact('restaurants'));
     }
 
-    public function getSorting(Request $request, $sort){
+    public function sorting(Request $request){
         $validate = Validator::make($request->all(), [
             'sorting' => 'required|string'
         ]);
@@ -25,13 +26,17 @@ class RestaurantController extends Controller
         }
 
         try{
-            $data = $this->getJsonFile();
-            $array_data = $data->getData();
-            $array_value = $this->sortBy($array_data, $request->input('sort'));
-            return $this->successResponse('success', $array_value);
+
         }
         catch (\Exception $exception){
             return $this->errorResponse('failed');
         }
+    }
+
+    public function sorting_value(Request $request){
+        $data = $this->getJsonFile();
+        $array_data = $data->getData();
+        $array_value = $this->sortBy($array_data, $request->input('sort'));
+        return $this->successResponse('success', $array_value);
     }
 }
