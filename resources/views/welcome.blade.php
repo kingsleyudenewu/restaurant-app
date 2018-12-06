@@ -174,42 +174,44 @@
             $('#fav_value').change(function () {
                 var fav_sort_value = $(this).val();
 
-                $.ajax({
-                    url : "{{ route('fav_sorting') }}",
-                    type: "POST",
-                    data : 'fav_sorting='+fav_sort_value,
-                    success:function(response)
-                    {
-//                        console.log(response);
-                        var json = jQuery.parseJSON(JSON.stringify(response.data));
-                        console.log(json);
-                        var content = '';
-                        for (var i = 0; i < json.length; i++) {
-                            content += '<tr>';
-                            content += '<td>' + json[i].name + '</td>';
-                            content += '<td>' + json[i].status + '</td>';
-                            content += '<td>' + json[i].sortingValues.bestMatch + '</td>';
-                            content += '<td>' + json[i].sortingValues.newest + '</td>';
-                            content += '<td>' + json[i].sortingValues.distance + '</td>';
-                            content += '<td>' + json[i].sortingValues.popularity + '</td>';
-                            content += '<td>' + json[i].sortingValues.ratingAverage + '</td>';
-                            content += '<td>' + json[i].sortingValues.averageProductPrice + '</td>';
-                            content += '<td>' + json[i].sortingValues.deliveryCosts + '</td>';
-                            content += '<td>' + json[i].sortingValues.minCost + '</td>';
-                            content += '<td>' + json[i].favourite + '</td>';
-                            content += '<td>' + json[i].topRestaurants + '</td>';
-                            content += '</tr>';
+                if(sort_value !== ''){
+                    $.ajax({
+                        url : "{{ route('fav_sorting') }}",
+                        type: "POST",
+                        data : 'fav_sorting='+fav_sort_value,
+                        success:function(response)
+                        {
+                            //                        console.log(response);
+                            var json = jQuery.parseJSON(JSON.stringify(response.data));
+                            console.log(json);
+                            var content = '';
+                            for (var i = 0; i < json.length; i++) {
+                                content += '<tr>';
+                                content += '<td>' + json[i].name + '</td>';
+                                content += '<td>' + json[i].status + '</td>';
+                                content += '<td>' + json[i].sortingValues.bestMatch + '</td>';
+                                content += '<td>' + json[i].sortingValues.newest + '</td>';
+                                content += '<td>' + json[i].sortingValues.distance + '</td>';
+                                content += '<td>' + json[i].sortingValues.popularity + '</td>';
+                                content += '<td>' + json[i].sortingValues.ratingAverage + '</td>';
+                                content += '<td>' + json[i].sortingValues.averageProductPrice + '</td>';
+                                content += '<td>' + json[i].sortingValues.deliveryCosts + '</td>';
+                                content += '<td>' + json[i].sortingValues.minCost + '</td>';
+                                content += '<td>' + json[i].favourite + '</td>';
+                                content += '<td>' + json[i].topRestaurants + '</td>';
+                                content += '</tr>';
+                            }
+
+
+                            $('#myTable tbody').html(content);
+                        },
+                        error: function(error)
+                        {
+                            console.log(error)
+                            alert('Operation failed');
                         }
-
-
-                        $('#myTable tbody').html(content);
-                    },
-                    error: function(error)
-                    {
-                        console.log(error)
-                        alert('Operation failed');
-                    }
-                });
+                    });
+                }
             });
 
             $('#sort_value').change(function () {
