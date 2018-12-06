@@ -47,7 +47,97 @@ class RestaurantTest extends TestCase
         ])->json('POST', 'sorting', ['sorting' => 'random']);
 
         $response->assertStatus(400)->assertJsonFragment([
-            'errors' => 'failed'
+            'errors' => 'failed',
+            'data' => null
+        ]);
+    }
+
+    /**
+     * Test sort values with empty string
+     *
+     * @return void
+     */
+    public function testWithEmptySortValue()
+    {
+        $response = $this->withHeaders([
+            'Content-Type' =>  $this->header['Accept']
+        ])->json('POST', 'sorting', ['sorting' => '']);
+
+        $response->assertStatus(400)->assertJsonFragment([
+            'data' => null,
+            'status' => 'error'
+        ]);
+    }
+
+    /**
+     * A basic test example helps to sort based on sort values
+     *
+     * @return void
+     */
+    public function testFavouriteSorting()
+    {
+        $response = $this->withHeaders([
+            'Content-Type' =>  $this->header['Accept']
+        ])->json('POST', 'fav_sorting', ['fav_sorting' => 'fav']);
+
+        $response->assertStatus(200)->assertJsonFragment([
+            'errors' => null,
+            'status' => 'success',
+            'message' => 'success'
+        ]);
+    }
+
+    /**
+     * A test case to sort based on non-favourite
+     *
+     * @return void
+     */
+    public function testNonFavouriteSorting()
+    {
+        $response = $this->withHeaders([
+            'Content-Type' =>  $this->header['Accept']
+        ])->json('POST', 'fav_sorting', ['fav_sorting' => 'non_fav']);
+
+        $response->assertStatus(200)->assertJsonFragment([
+            'errors' => null,
+            'status' => 'success',
+            'message' => 'success'
+        ]);
+    }
+
+    /**
+     * A test case to sort based on non-favourite with
+     * random sort value
+     *
+     * @return void
+     */
+    public function testNonFavouriteWithInvalidSorting()
+    {
+        $response = $this->withHeaders([
+            'Content-Type' =>  $this->header['Accept']
+        ])->json('POST', 'fav_sorting', ['fav_sorting' => 'random_fav']);
+
+        $response->assertStatus(400)->assertJsonFragment([
+            'data' => null,
+            'status' => 'error'
+        ]);
+    }
+
+    /**
+     * A test case to sort based on non-favourite with
+     * random sort value
+     *
+     * @return void
+     */
+    public function testNonFavouriteWithEmptySorting()
+    {
+        $response = $this->withHeaders([
+            'Content-Type' =>  $this->header['Accept']
+        ])->json('POST', 'fav_sorting', ['fav_sorting' => '']);
+
+        $response->assertStatus(400)->assertJsonFragment([
+            'data' => null,
+            'status' => 'error'
         ]);
     }
 }

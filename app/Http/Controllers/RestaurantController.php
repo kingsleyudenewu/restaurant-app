@@ -55,8 +55,13 @@ class RestaurantController extends Controller
                 $array_value = $this->sortByFavourite($array_data);
                 return $this->successResponse('success', $array_value->getData());
             }
-            $array_value = $this->sortByNonFavourite($array_data);
-            return $this->successResponse('success', $array_value->getData());
+            elseif ($request->input('fav_sorting') == 'non_fav'){
+                $array_value = $this->sortByNonFavourite($array_data);
+                return $this->successResponse('success', $array_value->getData());
+            }
+
+            return $this->errorResponse('Failed');
+
         }
         catch (\Exception $exception){
             return $this->errorResponse('failed');
