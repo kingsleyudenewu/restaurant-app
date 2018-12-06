@@ -130,7 +130,7 @@ class Controller extends BaseController
     public function sortByFavourite(&$items){
         if (is_array($items)){
             usort($items, function($a, $b) {
-                return  $a->favourite <=> $b->favourite;
+                return  $b->favourite <=> $a->favourite;
             });
 
             return response()->json($items, 200);
