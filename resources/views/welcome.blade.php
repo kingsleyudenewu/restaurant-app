@@ -69,6 +69,14 @@
             <h1>Search For Your Restaurant</h1>
             <hr>
             <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputEmail4">Favourite Sorting</label>
+                    <select name="fav_value" id="fav_value" class="form-control">
+                        <option value="">Sort By Favourites</option>
+                        <option value="fav"> Favourites</option>
+                        <option value="non_fav"> Non Favourites</option>
+                    </select>
+                </div>
 
                 <div class="form-group col-md-4">
                     <label for="inputEmail4">Sorting Values</label>
@@ -113,7 +121,7 @@
                     </tr>
                 </thead>
                 <tbody id="fbody">
-                @foreach ($restaurants as $value)
+                @foreach ($sorting_value as $value)
                     <tr>
                         <td>{{ $value->name }}</td>
                         <td>{{ $value->status }}</td>
@@ -158,11 +166,50 @@
         $(document).ready(function(){
             $('#name_search').keyup(function () {
                var value = $(this).val().toLowerCase();
-
-               var value = $(this).val().toLowerCase();
                $("#fbody tr").filter(function() {
                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                });
+            });
+
+            $('#fav_value').change(function () {
+                var fav_sort_value = $(this).val();
+
+                $.ajax({
+                    url : "{{ route('fav_sorting') }}",
+                    type: "POST",
+                    data : 'fav_sorting='+fav_sort_value,
+                    success:function(response)
+                    {
+//                        console.log(response);
+                        var json = jQuery.parseJSON(JSON.stringify(response.data));
+                        console.log(json);
+                        var content = '';
+                        for (var i = 0; i < json.length; i++) {
+                            content += '<tr>';
+                            content += '<td>' + json[i].name + '</td>';
+                            content += '<td>' + json[i].status + '</td>';
+                            content += '<td>' + json[i].sortingValues.bestMatch + '</td>';
+                            content += '<td>' + json[i].sortingValues.newest + '</td>';
+                            content += '<td>' + json[i].sortingValues.distance + '</td>';
+                            content += '<td>' + json[i].sortingValues.popularity + '</td>';
+                            content += '<td>' + json[i].sortingValues.ratingAverage + '</td>';
+                            content += '<td>' + json[i].sortingValues.averageProductPrice + '</td>';
+                            content += '<td>' + json[i].sortingValues.deliveryCosts + '</td>';
+                            content += '<td>' + json[i].sortingValues.minCost + '</td>';
+                            content += '<td>' + json[i].favourite + '</td>';
+                            content += '<td>' + json[i].topRestaurants + '</td>';
+                            content += '</tr>';
+                        }
+
+
+                        $('#myTable tbody').html(content);
+                    },
+                    error: function(error)
+                    {
+                        console.log(error)
+                        alert('Operation failed');
+                    }
+                });
             });
 
             $('#sort_value').change(function () {

@@ -109,7 +109,7 @@ class Controller extends BaseController
         return floor(($distance * $popularity) + $rating);
     }
 
-    public function sortBy(&$items, $key, $order='desc'){
+    public function sortBy(&$items, $key){
         if (is_array($items)){
             if($key == 'topRestaurants'){
                 usort($items, function($a, $b) use ($key){
@@ -125,5 +125,62 @@ class Controller extends BaseController
             return response()->json($items, 200);
         }
         return false;
+    }
+
+    public function sortByFavourite(&$items){
+        if (is_array($items)){
+            usort($items, function($a, $b) {
+                return  $a->favourite <=> $b->favourite;
+            });
+
+            return response()->json($items, 200);
+        }
+        return false;
+    }
+
+    public function sortByNonFavourite(&$items){
+        if(is_array($items)){
+            usort($items, function($a, $b) {
+                return  $a->favourite <=> $b->favourite;
+            });
+
+            $final_array = [];
+            foreach ($items as $key => $value) {
+                # code...
+                if($value->status == 'open' && $value->favourite == 'no')$final_array[] = $value;
+
+            }
+
+            foreach ($items as $key => $value) {
+                if ($value->status == 'order ahead' && $value->favourite == 'no' && !(in_array($value->name, $final_array)))$final_array[] = $value;
+            }
+
+            foreach ($items as $key => $value) {
+                if ($value->status == 'closed' && $value->favourite == 'no' && !(in_array($value->name, $final_array)))$final_array[] = $value;
+            }
+
+            foreach ($items as $key => $value) {
+                if($value->status == 'open' && $value->favourite == 'yes')$final_array[] = $value;
+            }
+
+
+            $closed = [];
+            foreach ($items as $key => $value) {
+                # code...
+                if($value->status == 'closed' && $value->favourite !== 'no')$closed[] = $value;
+            }
+
+            $order_ahead = [];
+            foreach ($items as $key => $value) {
+                # code...
+                if($value->status == 'order ahead' && $value->favourite !== 'no')$order_ahead[] = $value;
+            }
+
+            $result = array_merge($final_array, $order_ahead);
+            $result1 = array_merge($result, $closed);
+
+            return response()->json($result1, 200);
+        }
+
     }
 }

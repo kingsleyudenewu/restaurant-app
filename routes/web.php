@@ -13,3 +13,4 @@
 
 Route::get('/', 'RestaurantController@getAllRestaurant');
 Route::post('/sorting', 'RestaurantController@sorting')->name('sorting');
+Route::post('/fav_sorting', 'RestaurantController@fav_sorting')->name('fav_sorting');

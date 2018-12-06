@@ -12,8 +12,8 @@ class RestaurantController extends Controller
     public function getAllRestaurant(){
         //Fetch all the restaurants from the json file
         $restaurants = $this->getJsonFile()->getData();
-//        $sorting_value = $this->sortBy($restaurants, 'bestMatch')->getData();
-        return view('welcome', compact('restaurants'));
+        $sorting_value = $this->sortBy($restaurants, 'bestMatch')->getData();
+        return view('welcome', compact('sorting_value'));
     }
 
     public function sorting(Request $request){
@@ -35,5 +35,31 @@ class RestaurantController extends Controller
         catch (\Exception $exception){
             return $this->errorResponse('failed');
         }
+    }
+
+    public function fav_sorting(Request $request){
+        $validate = Validator::make($request->all(), [
+            'fav_sorting' => 'required|string'
+        ]);
+
+        if($validate->fails())
+        {
+            return $this->errorResponse($validate->errors());
+        }
+
+//        try{
+            $data = $this->getJsonFile();
+            $array_data = $data->getData();
+
+            if($request->input('fav_sorting') == 'fav'){
+                $array_value = $this->sortByFavourite($array_data);
+                return $this->successResponse('success', $array_value->getData());
+            }
+            $array_value = $this->sortByNonFavourite($array_data);
+            return $this->successResponse('success', $array_value->getData());
+//        }
+//        catch (\Exception $exception){
+//            return $this->errorResponse('failed');
+//        }
     }
 }
