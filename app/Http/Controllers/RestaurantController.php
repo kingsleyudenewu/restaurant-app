@@ -47,7 +47,7 @@ class RestaurantController extends Controller
             return $this->errorResponse($validate->errors());
         }
 
-//        try{
+        try{
             $data = $this->getJsonFile();
             $array_data = $data->getData();
 
@@ -57,9 +57,9 @@ class RestaurantController extends Controller
             }
             $array_value = $this->sortByNonFavourite($array_data);
             return $this->successResponse('success', $array_value->getData());
-//        }
-//        catch (\Exception $exception){
-//            return $this->errorResponse('failed');
-//        }
+        }
+        catch (\Exception $exception){
+            return $this->errorResponse('failed');
+        }
     }
 }
